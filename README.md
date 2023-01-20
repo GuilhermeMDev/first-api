@@ -45,9 +45,9 @@ Minha primeira API, utilizei MySql & Docker, possui um CRUD simples interagindo 
 
 #### Deletando um aluno
 ```http
-  DELETE /api/items/{id}
+  DELETE /api/alunos/{id}
 ```
 
 | Parâmetro   | Tipo       | Descrição                                   |
 | :---------- | :--------- | :------------------------------------------ |
-| `id`      | `string` | **Obrigatório**. O ID do item que você quer, lembre do verbo DELETE |
+| `id`      | `string` | **Obrigatório**. O ID do aluno que você quer, o verbo é DELETE |
