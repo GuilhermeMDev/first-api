@@ -1,6 +1,8 @@
-## Documentação da API (Em construção)
+# First API
 
-API roda com Docker, Possui um CRUD simples, interagindo com um banco de dados MySQL, listando, adicionando, editando. buscando valor específico e deletando items. 
+Minha primeira API, utilizei MySql & Docker, possui um CRUD simples interagindo com um banco de dados MySQL, listando, adicionando, editando. buscando valor específico e deletando items. 
+
+## Documentação da API (Em construção)
 
 #### Retorna todos os alunos
 
@@ -41,4 +43,11 @@ API roda com Docker, Possui um CRUD simples, interagindo com um banco de dados M
 | :---------- | :--------- | :---------------------------------- |
 | `api_key` | `string` | **Obrigatório**. O verbo HTTP POST |
 
-In progress... 
+#### Deletando um aluno
+```http
+  DELETE /api/items/{id}
+```
+
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `id`      | `string` | **Obrigatório**. O ID do item que você quer, lembre do verbo DELETE |
