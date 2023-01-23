@@ -23,23 +23,39 @@ class AlunosController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreAlunosRequest  $request
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\StoreAlunosRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreAlunosRequest $request) //Incluindo novo aluno
     {
-        return Alunos::create($request->all());
+        if (Alunos::create($request->all())) {
+
+            return response()->json([
+                'message' => 'Aluno Cadastrado com Sucesso.'
+            ], 201);
+        }
+
+        return response()->json([
+            'message' => 'Erro ao Cadastrar Aluno'
+        ], 2404);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Alunos  $alunos
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Alunos $alunos
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
-        return Alunos::findOrFail($id); //Só com o find, ele retorna código 200 mesmo que nao haja o valor no banco, com o OrFail, ele retorno o 404 caso não exista o item no banco de dados
+        $aluno = Alunos::find($id);
+        if (isset($aluno)) {
+            return $aluno;
+        }
+
+        return \response()->json([
+            'message' => 'Aluno não localizado no banco de dados'
+        ], 404);
     }
 
     /**
@@ -62,7 +78,7 @@ class AlunosController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Alunos  $alunos
+     * @param \App\Models\Alunos $alunos
      * @return int
      */
     public function destroy($id)

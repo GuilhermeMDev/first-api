@@ -31,12 +31,19 @@ class DiveTableController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  int  $table
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show($table)
     {
-        return DataDive::findOrFail($id);
+        $table = DataDive::find($table);
+        if (isset($table)) {
+            return $table;
+        }
+
+        return \response()->json([
+            'message' => 'Tabela não localizada no banco de dados'
+        ], 404);
     }
 
     /**

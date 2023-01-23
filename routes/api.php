@@ -24,5 +24,8 @@ Route::post('/alunos', [AlunosController::class, 'store']);
 Route::delete('/alunos/{id}', [AlunosController::class, 'destroy']);
 
 //dive-table
-Route::get('/dive-table', [DiveTableController::class, 'index']);
-Route::get('/dive-table/{id}', [DiveTableController::class, 'show']);
+
+Route::apiResource('dive-table', DiveTableController::class);
+
+//Route::get('/dive-table', [DiveTableController::class, 'index']);
+//Route::get('/dive-table/{id}', [DiveTableController::class, 'show']);
