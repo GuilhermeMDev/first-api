@@ -19,15 +19,6 @@ class AlunosController extends Controller
         return Alunos::all();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -35,7 +26,7 @@ class AlunosController extends Controller
      * @param  \App\Http\Requests\StoreAlunosRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreAlunosRequest $request) //Incluindo aluno
+    public function store(StoreAlunosRequest $request) //Incluindo novo aluno
     {
         return Alunos::create($request->all());
     }
@@ -49,17 +40,6 @@ class AlunosController extends Controller
     public function show($id)
     {
         return Alunos::findOrFail($id); //Só com o find, ele retorna código 200 mesmo que nao haja o valor no banco, com o OrFail, ele retorno o 404 caso não exista o item no banco de dados
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Alunos  $alunos
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Alunos $alunos)
-    {
-        //
     }
 
     /**
@@ -87,10 +67,9 @@ class AlunosController extends Controller
      */
     public function destroy($id)
     {
-        $deletou = Alunos::destroy($id);
+        $deletou = Alunos::destroy($id); //retorna 0 ou 1
 
-        if($deletou){
-            return "Aluno excluído";
-        }
+        return $deletou ? "Aluno excluído" : "";
+
     }
 }
