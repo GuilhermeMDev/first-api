@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use PhpParser\Node\Scalar\String_;
 
-class StoreAlunosRequest extends FormRequest
+class UpdateStudentsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +24,8 @@ class StoreAlunosRequest extends FormRequest
     public function rules()
     {
         return [
-            'nome' => 'required | string',
-            'idade' => 'required | integer',
+            'name' => 'required | string',
+            'age' => 'required | integer',
         ];
     }
 }

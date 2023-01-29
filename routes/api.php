@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AlunosController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\DiveTableController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -17,9 +17,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 //first CRUD
-Route::get('/alunos', [AlunosController::class, 'index']);
-Route::get('/alunos/{id}', [AlunosController::class, 'show']); //pesquisa o aluno pelo id
-Route::put('/alunos/{id}', [AlunosController::class, 'update']);
-Route::post('/alunos', [AlunosController::class, 'store']);
-Route::delete('/alunos/{id}', [AlunosController::class, 'destroy']);
+Route::get('/students', [StudentController::class, 'index']);
+Route::get('/student/{id}', [StudentController::class, 'show']); //pesquisa o aluno pelo id
+Route::put('/student/{id}', [StudentController::class, 'update']);
+Route::post('/student', [StudentController::class, 'store']);
+Route::delete('/student/{id}', [StudentController::class, 'destroy']);
 
