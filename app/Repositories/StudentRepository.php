@@ -4,21 +4,22 @@ namespace App\Repositories;
 
 use App\Interfaces\StudentRepositoryInterface;
 use App\Models\Students;
+use Illuminate\Database\Eloquent\Collection;
 
 class StudentRepository implements StudentRepositoryInterface
 {
 
     /**
-     * @return mixed
+     * @return Collection
      */
-    public function getAllStudents()
+    public function getAllStudents(): Collection
     {
         return Students::all();
     }
 
     /**
      * @param $studentId
-     * @return mixed
+     * @return string
      */
     public function getStudentById($studentId)
     {

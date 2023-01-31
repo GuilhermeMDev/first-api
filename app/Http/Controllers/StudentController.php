@@ -6,7 +6,7 @@ use App\Http\Requests\StoreStudentsRequest;
 use App\Http\Requests\UpdateStudentsRequest;
 use App\Interfaces\StudentRepositoryInterface;
 use App\Models\Students;
-use http\Env\Request;
+use App\Repositories\StudentRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
@@ -15,12 +15,14 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 class StudentController extends Controller
 {
 
-    private StudentRepositoryInterface $studentRepository;
+//    private StudentRepository $studentRepository;
+//
+//    public function __construct(StudentRepository $studentRepository = null)
+//    {
+//
+//        $this->$studentRepository = $studentRepository;
+//    }
 
-    public function __construct(StudentRepositoryInterface $studentRepository)
-    {
-        $this->$studentRepository = $this->studentRepository;
-    }
 
     /**
      * Display a listing of the resource.
@@ -29,8 +31,9 @@ class StudentController extends Controller
      */
     public function index() //Listagem completa de todos os Alunos cadastrados no sistema.
     {
+        $student = new StudentRepository();
         return response()->json([
-            'data' => $this->studentRepository->getAllStudents()
+            'data' => $student->getAllStudents()
         ]);
     }
 
