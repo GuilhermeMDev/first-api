@@ -6,34 +6,31 @@ use App\Http\Requests\StoreStudentsRequest;
 use App\Http\Requests\UpdateStudentsRequest;
 use App\Interfaces\StudentRepositoryInterface;
 use App\Models\Students;
-use App\Repositories\StudentRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 
 class StudentController extends Controller
 {
 
-//    private StudentRepositoryInterface $studentRepository;
-//
-//    public function __construct(StudentRepository $studentRepository = null)
-//    {
-//
-//        $this->$studentRepository = $studentRepository;
-//    }
+    private StudentRepositoryInterface $studentRepository;
 
+    public function __construct(StudentRepositoryInterface $studentRepository)
+    {
+        $this->studentRepository = $studentRepository;
+    }
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index() //Listagem completa de todos os Alunos cadastrados no sistema.
     {
-        $student = new StudentRepository();
         return response()->json([
-            'data' => $student->getAllStudents()
+            'data' => $this->studentRepository->getAllStudents()
         ]);
     }
 
@@ -41,11 +38,10 @@ class StudentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \App\Http\Requests\StoreStudentsRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store(StoreStudentsRequest $request): JsonResponse//Incluindo novo aluno
     {
-        $student = new StudentRepository();
 
         $studentDetails = $request->only([
             'name',
@@ -53,25 +49,31 @@ class StudentController extends Controller
         ]);
 
         return response()->json([
-            'data' => $student->addStudent($studentDetails)
-        ], ResponseAlias::HTTP_CREATED );
+            'data' => $this->studentRepository->addStudent($studentDetails)
+        ], ResponseAlias::HTTP_CREATED);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param \App\Models\Students $alunos
-     * @return \Illuminate\Http\JsonResponse
+     * @param Students $alunos
+     * @return JsonResponse
      */
-    public function show(UpdateStudentsRequest $request): JsonResponse
+    public function show(Request $request): JsonResponse
     {
-        $student = new StudentRepository();
 
         $studentId = $request->route('id');
 
+        $data = $this->studentRepository->getStudentById($studentId);
+
+        if ($data) {
+            return response()->json([
+                'data' => $data
+            ], ResponseAlias::HTTP_ACCEPTED);
+        }
+
         return response()->json([
-            'data' => $student->getStudentById($studentId)
-        ]);
+        ], ResponseAlias::HTTP_NO_CONTENT);
     }
 
     /**
@@ -83,7 +85,6 @@ class StudentController extends Controller
      */
     public function update(UpdateStudentsRequest $request): JsonResponse
     {
-        $student = new StudentRepository();
 
         $studentId = $request->route('id');
 
@@ -92,23 +93,28 @@ class StudentController extends Controller
             'age'
         ]);
 
-        return response()->json([
-            'data' => $student->updateStudent($studentId, $studentDetails)
-        ]);
+        $data = $this->studentRepository->updateStudent($studentId, $studentDetails);
+
+        if ($data == 1) return response()->json([
+            'message' => 'Update completed'
+        ], ResponseAlias::HTTP_OK);
+
+        if ($data == 0) return response()->json([
+            'message' => 'Student not found.'
+        ], ResponseAlias::HTTP_NO_CONTENT);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\Students $alunos
-     * @return int
+     * @param StoreStudentsRequest $request
+     * @return JsonResponse
      */
-    public function destroy(UpdateStudentsRequest $request): JsonResponse
+    public function destroy(Request $request): JsonResponse
     {
-        $student = new StudentRepository();
 
         $studentId = $request->route('id');
-        $student->deleteStudent($studentId);
+        $this->studentRepository->deleteStudent($studentId);
 
         return response()->json(null, ResponseAlias::HTTP_NO_CONTENT);
 
