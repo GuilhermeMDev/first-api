@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 class StudentController extends Controller
 {
 
-//    private StudentRepository $studentRepository;
+//    private StudentRepositoryInterface $studentRepository;
 //
 //    public function __construct(StudentRepository $studentRepository = null)
 //    {
@@ -37,7 +37,6 @@ class StudentController extends Controller
         ]);
     }
 
-
     /**
      * Store a newly created resource in storage.
      *
@@ -46,13 +45,15 @@ class StudentController extends Controller
      */
     public function store(StoreStudentsRequest $request): JsonResponse//Incluindo novo aluno
     {
+        $student = new StudentRepository();
+
         $studentDetails = $request->only([
             'name',
             'age'
         ]);
 
         return response()->json([
-            'data' => $this->studentRepository->addStudent($studentDetails)
+            'data' => $student->addStudent($studentDetails)
         ], ResponseAlias::HTTP_CREATED );
     }
 
@@ -64,10 +65,12 @@ class StudentController extends Controller
      */
     public function show(UpdateStudentsRequest $request): JsonResponse
     {
+        $student = new StudentRepository();
+
         $studentId = $request->route('id');
 
         return response()->json([
-            'data' => $this->studentRepository->getStudentById($studentId)
+            'data' => $student->getStudentById($studentId)
         ]);
     }
 
@@ -80,6 +83,8 @@ class StudentController extends Controller
      */
     public function update(UpdateStudentsRequest $request): JsonResponse
     {
+        $student = new StudentRepository();
+
         $studentId = $request->route('id');
 
         $studentDetails = $request->only([
@@ -88,7 +93,7 @@ class StudentController extends Controller
         ]);
 
         return response()->json([
-            'data' => $this->studentRepository->updateStudent($studentId, $studentDetails)
+            'data' => $student->updateStudent($studentId, $studentDetails)
         ]);
     }
 
@@ -100,8 +105,10 @@ class StudentController extends Controller
      */
     public function destroy(UpdateStudentsRequest $request): JsonResponse
     {
+        $student = new StudentRepository();
+
         $studentId = $request->route('id');
-        $this->studentRepository->deleteStudent($studentId);
+        $student->deleteStudent($studentId);
 
         return response()->json(null, ResponseAlias::HTTP_NO_CONTENT);
 
