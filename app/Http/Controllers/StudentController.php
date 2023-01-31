@@ -4,26 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreStudentsRequest;
 use App\Http\Requests\UpdateStudentsRequest;
+use App\Interfaces\StudentRepositoryInterface;
 use App\Models\Students;
+use http\Env\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
+
 
 class StudentController extends Controller
 {
+
+    private StudentRepositoryInterface $studentRepository;
+
+    public function __construct(StudentRepositoryInterface $studentRepository)
+    {
+        $this->$studentRepository = $this->studentRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index() //Listagem completa de todos os Alunos cadastrados no sistema.
     {
-        $list = Students::all();
-
-        if ($list || !isset($list)){
-            return $list;
-        }
         return response()->json([
-            'message' => 'Erro ao listar Alunos'
-        ], 404);
+            'data' => $this->studentRepository->getAllStudents()
+        ]);
     }
 
 
@@ -33,18 +41,16 @@ class StudentController extends Controller
      * @param \App\Http\Requests\StoreStudentsRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreStudentsRequest $request) //Incluindo novo aluno
+    public function store(StoreStudentsRequest $request): JsonResponse//Incluindo novo aluno
     {
-        if (Students::create($request->all())) {
-
-            return response()->json([
-                'message' => 'Aluno Cadastrado com Sucesso.'
-            ], 201);
-        }
+        $studentDetails = $request->only([
+            'name',
+            'age'
+        ]);
 
         return response()->json([
-            'message' => 'Erro ao Cadastrar Aluno'
-        ], 404);
+            'data' => $this->studentRepository->addStudent($studentDetails)
+        ], ResponseAlias::HTTP_CREATED );
     }
 
     /**
@@ -53,16 +59,13 @@ class StudentController extends Controller
      * @param \App\Models\Students $alunos
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(UpdateStudentsRequest $request): JsonResponse
     {
-        $student = Students::find($id);
-        if (isset($student)) {
-            return $student;
-        }
+        $studentId = $request->route('id');
 
-        return \response()->json([
-            'message' => 'Aluno não localizado no banco de dados'
-        ], 404);
+        return response()->json([
+            'data' => $this->studentRepository->getStudentById($studentId)
+        ]);
     }
 
     /**
@@ -72,13 +75,18 @@ class StudentController extends Controller
      * @param $id
      * @return Response
      */
-    public function update(UpdateStudentsRequest $request, $id)
+    public function update(UpdateStudentsRequest $request): JsonResponse
     {
-        $student = Students::findOrFail($id);
+        $studentId = $request->route('id');
 
-        $student->update($request->all());
+        $studentDetails = $request->only([
+            'name',
+            'age'
+        ]);
 
-        return $student;
+        return response()->json([
+            'data' => $this->studentRepository->updateStudent($studentId, $studentDetails)
+        ]);
     }
 
     /**
@@ -87,11 +95,12 @@ class StudentController extends Controller
      * @param \App\Models\Students $alunos
      * @return int
      */
-    public function destroy($id)
+    public function destroy(UpdateStudentsRequest $request): JsonResponse
     {
-        $deleted = Students::destroy($id); //return 0 ou 1
+        $studentId = $request->route('id');
+        $this->studentRepository->deleteStudent($studentId);
 
-        return $deleted ? "Deleted Student" : "";
+        return response()->json(null, ResponseAlias::HTTP_NO_CONTENT);
 
     }
 }

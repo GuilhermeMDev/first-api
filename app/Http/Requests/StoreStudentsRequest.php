@@ -29,4 +29,5 @@ class StoreStudentsRequest extends FormRequest
             'age' => 'required | integer',
         ];
     }
+
 }
